@@ -96,10 +96,10 @@ const Index = () => {
           </p>
           
           <div className="mt-12">
-            <h2 className="text-sm font-semibold text-muted-foreground mb-6 uppercase tracking-wider">
+            <div className="inline-block px-4 py-2 bg-white/90 text-gray-700 text-sm font-medium rounded-md mb-6">
               Related searches
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            </div>
+            <div className="space-y-4 max-w-3xl">
               <ContentCard title={content.box_1_title} link={content.box_1_link} />
               <ContentCard title={content.box_2_title} link={content.box_2_link} />
               <ContentCard title={content.box_3_title} link={content.box_3_link} />
