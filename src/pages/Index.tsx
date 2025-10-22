@@ -1,12 +1,114 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import Navigation from "@/components/Navigation";
+import ContentCard from "@/components/ContentCard";
+import { toast } from "sonner";
+
+interface HomepageContent {
+  id: string;
+  title: string;
+  description: string;
+  box_1_title: string;
+  box_1_link: string;
+  box_2_title: string;
+  box_2_link: string;
+  box_3_title: string;
+  box_3_link: string;
+  box_4_title: string;
+  box_4_link: string;
+  box_5_title: string;
+  box_5_link: string;
+}
 
 const Index = () => {
-  return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
+  const [content, setContent] = useState<HomepageContent | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchContent();
+
+    // Subscribe to real-time updates
+    const channel = supabase
+      .channel("homepage-changes")
+      .on(
+        "postgres_changes",
+        {
+          event: "UPDATE",
+          schema: "public",
+          table: "homepage_content",
+        },
+        (payload) => {
+          setContent(payload.new as HomepageContent);
+          toast.success("Content updated!");
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
+
+  const fetchContent = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("homepage_content")
+        .select("*")
+        .limit(1)
+        .maybeSingle();
+
+      if (error) throw error;
+      setContent(data);
+    } catch (error) {
+      console.error("Error fetching content:", error);
+      toast.error("Failed to load content");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-foreground text-xl">Loading...</div>
       </div>
+    );
+  }
+
+  if (!content) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-foreground text-xl">No content available</div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-background">
+      <Navigation />
+      <main className="max-w-5xl mx-auto px-8 py-12">
+        <div className="animate-fade-in">
+          <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6 text-center">
+            {content.title}
+          </h1>
+          <p className="text-lg text-foreground/90 mb-8 text-center leading-relaxed max-w-4xl mx-auto">
+            {content.description}
+          </p>
+          
+          <div className="mt-12">
+            <h2 className="text-sm font-semibold text-muted-foreground mb-6 uppercase tracking-wider">
+              Related searches
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <ContentCard title={content.box_1_title} link={content.box_1_link} />
+              <ContentCard title={content.box_2_title} link={content.box_2_link} />
+              <ContentCard title={content.box_3_title} link={content.box_3_link} />
+              <ContentCard title={content.box_4_title} link={content.box_4_link} />
+              <ContentCard title={content.box_5_title} link={content.box_5_link} />
+            </div>
+          </div>
+        </div>
+      </main>
     </div>
   );
 };
