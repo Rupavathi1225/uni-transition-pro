@@ -11,9 +11,14 @@ const Navigation = () => {
             <span className="absolute bottom-0 left-0 w-full h-0.5 bg-red-500"></span>
           </span>
         </Link>
-        <button className="p-2 rounded-lg hover:bg-secondary transition-colors">
-          <Search className="w-6 h-6 text-foreground" />
-        </button>
+        <div className="flex items-center gap-6">
+          <Link to="/actions" className="text-foreground/80 hover:text-foreground transition-colors font-medium">
+            Actions
+          </Link>
+          <button className="p-2 rounded-lg hover:bg-secondary transition-colors">
+            <Search className="w-6 h-6 text-foreground" />
+          </button>
+        </div>
       </div>
     </nav>
   );

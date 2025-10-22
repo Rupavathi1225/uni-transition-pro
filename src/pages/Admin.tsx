@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, NavLink } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -7,8 +7,19 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
-import Navigation from "@/components/Navigation";
 import { User } from "@supabase/supabase-js";
+import { Home, FileText, LogOut } from "lucide-react";
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarProvider,
+} from "@/components/ui/sidebar";
 
 interface ContentForm {
   id: string;
@@ -124,94 +135,157 @@ const Admin = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <Navigation />
-      <div className="max-w-4xl mx-auto px-8 py-12">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold text-foreground">Admin Panel</h1>
-          <Button onClick={handleLogout} variant="outline">
-            Logout
-          </Button>
-        </div>
+    <SidebarProvider>
+      <div className="min-h-screen flex w-full bg-background">
+        <Sidebar className="border-r border-border">
+          <SidebarContent>
+            <SidebarGroup>
+              <SidebarGroupLabel className="text-primary text-lg font-bold px-4 py-4">
+                Admin Panel
+              </SidebarGroupLabel>
+              <SidebarGroupContent>
+                <SidebarMenu>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton asChild>
+                      <NavLink
+                        to="/"
+                        className={({ isActive }) =>
+                          isActive
+                            ? "bg-primary/20 text-primary"
+                            : "hover:bg-muted"
+                        }
+                      >
+                        <Home className="w-4 h-4" />
+                        <span>Home</span>
+                      </NavLink>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton asChild>
+                      <NavLink
+                        to="/admin"
+                        className={({ isActive }) =>
+                          isActive
+                            ? "bg-primary/20 text-primary"
+                            : "hover:bg-muted"
+                        }
+                      >
+                        <FileText className="w-4 h-4" />
+                        <span>Content Page</span>
+                      </NavLink>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton asChild>
+                      <NavLink
+                        to="/admin/actions"
+                        className={({ isActive }) =>
+                          isActive
+                            ? "bg-primary/20 text-primary"
+                            : "hover:bg-muted"
+                        }
+                      >
+                        <FileText className="w-4 h-4" />
+                        <span>Action Page</span>
+                      </NavLink>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton onClick={handleLogout} className="hover:bg-destructive/20 hover:text-destructive">
+                      <LogOut className="w-4 h-4" />
+                      <span>Logout</span>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </SidebarGroup>
+          </SidebarContent>
+        </Sidebar>
 
-        <Card className="bg-card border-2 border-border">
-          <CardHeader>
-            <CardTitle>Edit Homepage Content</CardTitle>
-            <CardDescription>Update the main page content and related search boxes</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="space-y-2">
-                <Label htmlFor="title">Main Title</Label>
-                <Input
-                  id="title"
-                  value={content.title}
-                  onChange={(e) => setContent({ ...content, title: e.target.value })}
-                  required
-                  className="bg-background border-border"
-                />
-              </div>
+        <main className="flex-1 p-8">
+          <div className="max-w-4xl mx-auto">
+            <h1 className="text-3xl font-bold text-foreground mb-8">Content Page Manager</h1>
 
-              <div className="space-y-2">
-                <Label htmlFor="description">Description</Label>
-                <Textarea
-                  id="description"
-                  value={content.description}
-                  onChange={(e) => setContent({ ...content, description: e.target.value })}
-                  required
-                  rows={4}
-                  className="bg-background border-border"
-                />
-              </div>
-
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold text-foreground">Related Search Boxes</h3>
-                
-                {[1, 2, 3, 4, 5].map((num) => (
-                  <div key={num} className="p-4 border border-border rounded-lg space-y-2">
-                    <Label htmlFor={`box${num}-title`}>Box {num} Title</Label>
+            <Card className="bg-card border-2 border-border">
+              <CardHeader>
+                <CardTitle>Edit Homepage Content</CardTitle>
+                <CardDescription>Update the main page content and related search boxes</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <form onSubmit={handleSubmit} className="space-y-6">
+                  <div className="space-y-2">
+                    <Label htmlFor="title">Main Title</Label>
                     <Input
-                      id={`box${num}-title`}
-                      value={content[`box_${num}_title` as keyof ContentForm] as string}
-                      onChange={(e) =>
-                        setContent({
-                          ...content,
-                          [`box_${num}_title`]: e.target.value,
-                        })
-                      }
+                      id="title"
+                      value={content.title}
+                      onChange={(e) => setContent({ ...content, title: e.target.value })}
                       required
-                      className="bg-background border-border"
-                    />
-                    <Label htmlFor={`box${num}-link`}>Box {num} Link</Label>
-                    <Input
-                      id={`box${num}-link`}
-                      value={content[`box_${num}_link` as keyof ContentForm] as string}
-                      onChange={(e) =>
-                        setContent({
-                          ...content,
-                          [`box_${num}_link`]: e.target.value,
-                        })
-                      }
-                      required
-                      placeholder="/page1"
                       className="bg-background border-border"
                     />
                   </div>
-                ))}
-              </div>
 
-              <Button
-                type="submit"
-                className="w-full bg-primary text-primary-foreground hover:bg-primary/90"
-                disabled={saving}
-              >
-                {saving ? "Saving..." : "Save Changes"}
-              </Button>
-            </form>
-          </CardContent>
-        </Card>
+                  <div className="space-y-2">
+                    <Label htmlFor="description">Description</Label>
+                    <Textarea
+                      id="description"
+                      value={content.description}
+                      onChange={(e) => setContent({ ...content, description: e.target.value })}
+                      required
+                      rows={4}
+                      className="bg-background border-border"
+                    />
+                  </div>
+
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-semibold text-foreground">Related Search Boxes</h3>
+                    
+                    {[1, 2, 3, 4, 5].map((num) => (
+                      <div key={num} className="p-4 border border-border rounded-lg space-y-2">
+                        <Label htmlFor={`box${num}-title`}>Box {num} Title</Label>
+                        <Input
+                          id={`box${num}-title`}
+                          value={content[`box_${num}_title` as keyof ContentForm] as string}
+                          onChange={(e) =>
+                            setContent({
+                              ...content,
+                              [`box_${num}_title`]: e.target.value,
+                            })
+                          }
+                          required
+                          className="bg-background border-border"
+                        />
+                        <Label htmlFor={`box${num}-link`}>Box {num} Link</Label>
+                        <Input
+                          id={`box${num}-link`}
+                          value={content[`box_${num}_link` as keyof ContentForm] as string}
+                          onChange={(e) =>
+                            setContent({
+                              ...content,
+                              [`box_${num}_link`]: e.target.value,
+                            })
+                          }
+                          required
+                          placeholder="/page1"
+                          className="bg-background border-border"
+                        />
+                      </div>
+                    ))}
+                  </div>
+
+                  <Button
+                    type="submit"
+                    className="w-full bg-primary text-primary-foreground hover:bg-primary/90"
+                    disabled={saving}
+                  >
+                    {saving ? "Saving..." : "Save Changes"}
+                  </Button>
+                </form>
+              </CardContent>
+            </Card>
+          </div>
+        </main>
       </div>
-    </div>
+    </SidebarProvider>
   );
 };
 

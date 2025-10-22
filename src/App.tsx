@@ -6,6 +6,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import Admin from "./pages/Admin";
+import Actions from "./pages/Actions";
+import AdminActions from "./pages/AdminActions";
 import PlaceholderPage from "./pages/PlaceholderPage";
 import NotFound from "./pages/NotFound";
 
@@ -21,6 +23,8 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/auth" element={<Auth />} />
           <Route path="/admin" element={<Admin />} />
+          <Route path="/actions" element={<Actions />} />
+          <Route path="/admin/actions" element={<AdminActions />} />
           <Route path="/page1" element={<PlaceholderPage />} />
           <Route path="/page2" element={<PlaceholderPage />} />
           <Route path="/page3" element={<PlaceholderPage />} />

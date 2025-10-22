@@ -14,6 +14,33 @@ export type Database = {
   }
   public: {
     Tables: {
+      actions: {
+        Row: {
+          button_text: string
+          created_at: string
+          description: string
+          id: string
+          link: string
+          title: string
+        }
+        Insert: {
+          button_text?: string
+          created_at?: string
+          description: string
+          id?: string
+          link: string
+          title: string
+        }
+        Update: {
+          button_text?: string
+          created_at?: string
+          description?: string
+          id?: string
+          link?: string
+          title?: string
+        }
+        Relationships: []
+      }
       homepage_content: {
         Row: {
           box_1_link: string
