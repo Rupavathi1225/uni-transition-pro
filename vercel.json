@@ -1,11 +1,11 @@
 {
   "rewrites": [
     {
-      "source": "/wholesome/(.*)",
+      "source": "/webresult/(.*)",
       "destination": "https://wholesome-ad-forge.vercel.app/$1"
     },
     {
-      "source": "/wholesome",
+      "source": "/webresult",
       "destination": "https://wholesome-ad-forge.vercel.app/"
     },
     {
