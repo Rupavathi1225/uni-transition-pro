@@ -1,5 +1,16 @@
 {
   "rewrites": [
-    { "source": "/(.*)", "destination": "/" }
+    {
+      "source": "/wholesome/(.*)",
+      "destination": "https://wholesome-ad-forge.vercel.app/$1"
+    },
+    {
+      "source": "/wholesome",
+      "destination": "https://wholesome-ad-forge.vercel.app/"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/"
+    }
   ]
 }
